@@ -1,0 +1,123 @@
+version: '3.8'
+services:
+  nn:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: namenode
+    hostname: namenode
+    extra_hosts:
+       - "datanode1:172.10.0.3"
+       - "datanode2:172.10.0.4"
+       - "datanode3:172.10.0.5"
+       - "datanode4:172.10.0.6"
+       - "cloudera.asia-east1-c.c.feisty-access-276605.internal cloudera:10.140.0.21"  # Added by Google
+       - "metadata.google.internal:169.254.169.254"  # Added by Google
+    tty: true     
+    ports:
+       - "10022:22"
+       - "7180:7180"
+       - "9870:9870" 
+       - "7432:7432"
+       - "3306:3306"  
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.10.0.2
+
+
+  dn1:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile_datanode
+    container_name: datanode1  
+    hostname: datanode1
+    extra_hosts:
+       - "namenode:172.10.0.2"
+       - "datanode2:172.10.0.4"
+       - "datanode3:172.10.0.5"
+       - "datanode4:172.10.0.6"
+       - "cloudera.asia-east1-c.c.feisty-access-276605.internal cloudera:10.140.0.21"  # Added by Google
+       - "metadata.google.internal:169.254.169.254"  # Added by Google
+    tty: true     
+    ports:
+       - "11022:22"
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.10.0.3
+
+  dn2:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile_datanode
+    container_name: datanode2  
+    hostname: datanode2
+    extra_hosts:
+       - "namenode:172.10.0.2"
+       - "datanode1:172.10.0.3"
+       - "datanode3:172.10.0.5"
+       - "datanode4:172.10.0.6"
+       - "cloudera.asia-east1-c.c.feisty-access-276605.internal cloudera:10.140.0.21"  # Added by Google
+       - "metadata.google.internal:169.254.169.254"  # Added by Google
+    tty: true     
+    ports:
+       - "12022:22"
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.10.0.4     
+
+  dn3:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile_datanode
+    container_name: datanode3    
+    hostname: datanode3
+    extra_hosts:
+       - "namenode:172.10.0.2"
+       - "datanode1:172.10.0.3"
+       - "datanode2:172.10.0.4"
+       - "datanode4:172.10.0.6"
+       - "cloudera.asia-east1-c.c.feisty-access-276605.internal cloudera:10.140.0.21"  # Added by Google
+       - "metadata.google.internal:169.254.169.254"  # Added by Google
+    tty: true     
+    ports:
+       - "13022:22" 
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.10.0.5
+
+  dn4:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile_datanode
+    container_name: datanode4    
+    hostname: datanode4
+    extra_hosts:
+       - "namenode:172.10.0.2"
+       - "datanode1:172.10.0.3"
+       - "datanode2:172.10.0.4"
+       - "datanode3:172.10.0.5"
+       - "cloudera.asia-east1-c.c.feisty-access-276605.internal cloudera:10.140.0.21"  # Added by Google
+       - "metadata.google.internal:169.254.169.254"  # Added by Google
+    tty: true     
+    ports:
+       - "14022:22" 
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.10.0.6
+
+networks:
+  net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.10.0.0/24"
